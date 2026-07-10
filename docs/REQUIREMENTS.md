@@ -53,8 +53,8 @@
 
 ## Profile
 
-- [ ] Update profile
-- [ ] Change password
+- [x] Update profile
+- [x] Change password
 
 ## Testing
 

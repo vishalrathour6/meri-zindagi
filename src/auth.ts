@@ -13,7 +13,7 @@ import { prisma } from "@/lib/prisma";
  * Account/Session/VerificationToken tables; add the adapter if/when OAuth or
  * database sessions are introduced.
  */
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const { handlers, auth, signIn, signOut, unstable_update } = NextAuth({
   ...authConfig,
   session: { strategy: "jwt" },
   providers: [
@@ -39,6 +39,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     ...authConfig.callbacks,
+    jwt({ token, trigger, session }) {
+      // Reflect profile updates (e.g. name change) triggered via unstable_update.
+      if (trigger === "update" && session?.user?.name) {
+        token.name = session.user.name;
+      }
+      return token;
+    },
     session({ session, token }) {
       // Auth.js stores the user id on `token.sub` by default; expose it.
       if (token.sub) session.user.id = token.sub;
