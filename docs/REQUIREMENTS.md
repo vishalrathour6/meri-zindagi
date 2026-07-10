@@ -6,24 +6,24 @@
 
 ## Foundation
 
-- [ ] Next.js 16 with App Router
-- [ ] TypeScript
-- [ ] shadcn/ui + Tailwind CSS
-- [ ] Auth.js authentication
-- [ ] PostgreSQL database
-- [ ] Prisma ORM
-- [ ] React Hook Form
-- [ ] Zod validation
-- [ ] React Query
-- [ ] Responsive layout
-- [ ] Dark mode
-- [ ] Protected routes
+- [x] Next.js 16 with App Router
+- [x] TypeScript
+- [x] shadcn/ui + Tailwind CSS
+- [x] Auth.js authentication
+- [x] PostgreSQL database
+- [x] Prisma ORM
+- [x] React Hook Form
+- [x] Zod validation
+- [x] React Query
+- [x] Responsive layout
+- [x] Dark mode
+- [x] Protected routes
 
 ## Authentication
 
-- [ ] Register
-- [ ] Login
-- [ ] Logout
+- [x] Register
+- [x] Login
+- [x] Logout
 - [ ] Forgot Password
 
 ## Dashboard
@@ -35,21 +35,21 @@
 
 ## Diary
 
-- [ ] CRUD
-- [ ] Search
-- [ ] Filter by date
+- [x] CRUD
+- [x] Search
+- [x] Filter by date
 - [ ] Rich text editor (optional)
-- [ ] History
+- [x] History
 
 ## Tasks
 
-- [ ] CRUD
-- [ ] Mark complete
-- [ ] Mark pending
-- [ ] Search
-- [ ] Filter
-- [ ] Due date
-- [ ] History
+- [x] CRUD
+- [x] Mark complete
+- [x] Mark pending
+- [x] Search
+- [x] Filter
+- [x] Due date
+- [x] History
 
 ## Profile
 
