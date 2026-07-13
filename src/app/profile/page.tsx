@@ -1,8 +1,6 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import { auth } from "@/auth";
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,8 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { LogoutButton } from "@/components/layout/logout-button";
-import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { AppHeader } from "@/components/layout/app-header";
 import { ChangePasswordForm } from "@/features/profile/components/ChangePasswordForm";
 import { ProfileForm } from "@/features/profile/components/ProfileForm";
 import { prisma } from "@/lib/prisma";
@@ -37,53 +34,47 @@ export default async function ProfilePage() {
   if (!user) redirect("/login");
 
   return (
-    <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-12">
-      <div className="mb-8 flex items-center justify-between gap-4">
-        <div>
+    <>
+      <AppHeader />
+      <main className="mx-auto w-full max-w-2xl flex-1 px-6 py-12">
+        <div className="mb-8">
           <h1 className="text-2xl font-semibold tracking-tight">Profile</h1>
           <p className="text-muted-foreground mt-1">
             Manage your account details.
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button asChild variant="ghost" size="sm">
-            <Link href="/dashboard">Dashboard</Link>
-          </Button>
-          <ThemeToggle />
-          <LogoutButton />
+
+        <div className="grid gap-6">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-4">
+                <div className="bg-primary text-primary-foreground flex size-12 shrink-0 items-center justify-center rounded-full text-lg font-medium">
+                  {initials(user.name)}
+                </div>
+                <div>
+                  <CardTitle>Account</CardTitle>
+                  <CardDescription>Update your display name.</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <ProfileForm name={user.name} email={user.email} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Password</CardTitle>
+              <CardDescription>
+                Change the password you use to sign in.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChangePasswordForm />
+            </CardContent>
+          </Card>
         </div>
-      </div>
-
-      <div className="grid gap-6">
-        <Card>
-          <CardHeader>
-            <div className="flex items-center gap-4">
-              <div className="bg-primary text-primary-foreground flex size-12 shrink-0 items-center justify-center rounded-full text-lg font-medium">
-                {initials(user.name)}
-              </div>
-              <div>
-                <CardTitle>Account</CardTitle>
-                <CardDescription>Update your display name.</CardDescription>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <ProfileForm name={user.name} email={user.email} />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Password</CardTitle>
-            <CardDescription>
-              Change the password you use to sign in.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChangePasswordForm />
-          </CardContent>
-        </Card>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
