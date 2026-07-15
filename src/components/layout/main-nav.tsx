@@ -5,19 +5,13 @@ import { usePathname } from "next/navigation";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-
-const NAV_ITEMS = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/diary", label: "Diary" },
-  { href: "/tasks", label: "Tasks" },
-  { href: "/profile", label: "Profile" },
-] as const;
+import { NAV_ITEMS } from "@/components/layout/nav-items";
 
 export function MainNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex items-center gap-1">
+    <nav className="hidden items-center gap-1 md:flex">
       {NAV_ITEMS.map((item) => {
         const active =
           pathname === item.href || pathname.startsWith(`${item.href}/`);
