@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import { TagBadge } from "@/features/tags/components/TagBadge";
 
 import type { Diary } from "../api";
 import { formatDateLabel, snippet } from "../utils";
@@ -73,6 +74,13 @@ export function DiaryList({
               <p className="text-muted-foreground mt-1.5 text-xs">
                 {formatDateLabel(entry.createdAt)}
               </p>
+              {entry.tags.length > 0 ? (
+                <div className="mt-2 flex flex-wrap gap-1">
+                  {entry.tags.map((tag) => (
+                    <TagBadge key={tag.id} tag={tag} />
+                  ))}
+                </div>
+              ) : null}
             </button>
           </li>
         ))}

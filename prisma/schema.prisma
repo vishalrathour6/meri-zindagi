@@ -20,6 +20,7 @@ model User {
 
   diaries Diary[]
   tasks   Task[]
+  tags    Tag[]
 }
 
 model Diary {
@@ -30,7 +31,8 @@ model Diary {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tags Tag[]
 
   @@index([userId])
 }
@@ -45,8 +47,25 @@ model Task {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tags Tag[]
 
+  @@index([userId])
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  color     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  diaries Diary[]
+  tasks   Task[]
+
+  @@unique([userId, name])
   @@index([userId])
 }
 

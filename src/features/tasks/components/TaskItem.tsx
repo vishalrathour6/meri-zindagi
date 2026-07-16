@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { formatDateLabel, snippet } from "@/lib/format";
+import { TagBadge } from "@/features/tags/components/TagBadge";
 
 import type { Task } from "../api";
 
@@ -61,6 +62,13 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
             {overdue ? "Overdue · " : "Due "}
             {formatDateLabel(task.dueDate)}
           </Badge>
+        ) : null}
+        {task.tags.length > 0 ? (
+          <div className="mt-2 flex flex-wrap gap-1">
+            {task.tags.map((tag) => (
+              <TagBadge key={tag.id} tag={tag} />
+            ))}
+          </div>
         ) : null}
       </div>
       <div className="flex shrink-0 items-center gap-1">

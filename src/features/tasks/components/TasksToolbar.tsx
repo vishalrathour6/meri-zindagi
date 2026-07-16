@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { TagFilterSelect } from "@/features/tags/components/TagFilterSelect";
 
 import type { TaskStatus } from "../schemas";
 
@@ -21,6 +22,8 @@ type TasksToolbarProps = {
   onSearchChange: (value: string) => void;
   status: StatusFilter;
   onStatusChange: (value: StatusFilter) => void;
+  tag: string;
+  onTagChange: (value: string) => void;
   onNew: () => void;
 };
 
@@ -29,6 +32,8 @@ export function TasksToolbar({
   onSearchChange,
   status,
   onStatusChange,
+  tag,
+  onTagChange,
   onNew,
 }: TasksToolbarProps) {
   return (
@@ -56,6 +61,11 @@ export function TasksToolbar({
           <SelectItem value="Completed">Completed</SelectItem>
         </SelectContent>
       </Select>
+      <TagFilterSelect
+        value={tag}
+        onChange={onTagChange}
+        className="sm:w-40"
+      />
       <Button onClick={onNew}>
         <Plus className="mr-1 size-4" />
         Add task

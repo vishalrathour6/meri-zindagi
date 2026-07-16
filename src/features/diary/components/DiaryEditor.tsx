@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { TagPicker } from "@/features/tags/components/TagPicker";
 
 import type { Diary } from "../api";
 import { useCreateDiary, useUpdateDiary } from "../hooks";
@@ -43,6 +44,7 @@ export function DiaryEditor({
     defaultValues: {
       title: entry?.title ?? "",
       content: entry?.content ?? "",
+      tagIds: entry?.tags.map((tag) => tag.id) ?? [],
     },
   });
 
@@ -54,7 +56,7 @@ export function DiaryEditor({
       } else {
         const created = await createMutation.mutateAsync(values);
         toast.success("Entry saved.");
-        form.reset({ title: "", content: "" });
+        form.reset({ title: "", content: "", tagIds: [] });
         onCreated(created);
       }
     } catch (error) {
@@ -121,6 +123,22 @@ export function DiaryEditor({
                     placeholder="Write about your day…"
                     className="min-h-[240px] flex-1 resize-none"
                     {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="tagIds"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tags</FormLabel>
+                <FormControl>
+                  <TagPicker
+                    value={field.value ?? []}
+                    onChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />

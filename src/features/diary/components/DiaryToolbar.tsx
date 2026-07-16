@@ -10,6 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { TagFilterSelect } from "@/features/tags/components/TagFilterSelect";
 
 import { formatDateLabel } from "../utils";
 
@@ -18,6 +19,8 @@ type DiaryToolbarProps = {
   onSearchChange: (value: string) => void;
   date: Date | undefined;
   onDateChange: (date: Date | undefined) => void;
+  tag: string;
+  onTagChange: (value: string) => void;
   onNew: () => void;
 };
 
@@ -26,6 +29,8 @@ export function DiaryToolbar({
   onSearchChange,
   date,
   onDateChange,
+  tag,
+  onTagChange,
   onNew,
 }: DiaryToolbarProps) {
   return (
@@ -77,6 +82,11 @@ export function DiaryToolbar({
             Clear
           </Button>
         ) : null}
+        <TagFilterSelect
+          value={tag}
+          onChange={onTagChange}
+          className="ml-auto w-36"
+        />
       </div>
     </div>
   );

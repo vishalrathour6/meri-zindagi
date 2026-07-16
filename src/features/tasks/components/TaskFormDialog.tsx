@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/popover";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDateLabel, toDateParam } from "@/lib/format";
+import { TagPicker } from "@/features/tags/components/TagPicker";
 
 import type { Task, TaskListParams } from "../api";
 import { useCreateTask, useUpdateTask } from "../hooks";
@@ -41,6 +42,7 @@ const formSchema = z.object({
   title: z.string().trim().min(1, "Title is required").max(200, "Title is too long"),
   description: z.string().trim().max(2000, "Description is too long"),
   dueDate: z.date().optional(),
+  tagIds: z.array(z.string()),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -65,7 +67,7 @@ export function TaskFormDialog({
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: { title: "", description: "", dueDate: undefined },
+    defaultValues: { title: "", description: "", dueDate: undefined, tagIds: [] },
   });
 
   // Reset the form to match the selected task each time the dialog opens.
@@ -75,6 +77,7 @@ export function TaskFormDialog({
         title: task?.title ?? "",
         description: task?.description ?? "",
         dueDate: task?.dueDate ? new Date(task.dueDate) : undefined,
+        tagIds: task?.tags.map((tag) => tag.id) ?? [],
       });
     }
   }, [open, task, form]);
@@ -86,7 +89,7 @@ export function TaskFormDialog({
       if (isEditing) {
         await updateMutation.mutateAsync({
           id: task.id,
-          input: { title: values.title, description, dueDate },
+          input: { title: values.title, description, dueDate, tagIds: values.tagIds },
         });
         toast.success("Task updated.");
       } else {
@@ -94,6 +97,7 @@ export function TaskFormDialog({
           title: values.title,
           description,
           dueDate,
+          tagIds: values.tagIds,
         });
         toast.success("Task added.");
       }
@@ -191,6 +195,19 @@ export function TaskFormDialog({
                       </Button>
                     ) : null}
                   </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="tagIds"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tags</FormLabel>
+                  <FormControl>
+                    <TagPicker value={field.value} onChange={field.onChange} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}

@@ -15,6 +15,7 @@ export type Task = {
   description: string | null;
   status: TaskStatus;
   dueDate: string | null;
+  tags: { id: string; name: string; color: string }[];
   createdAt: string;
   updatedAt: string;
 };
@@ -22,6 +23,7 @@ export type Task = {
 export type TaskListParams = {
   q?: string;
   status?: TaskStatus;
+  tag?: string;
   page?: number;
   pageSize?: number;
 };
@@ -44,6 +46,7 @@ export async function fetchTasks(
   const search = new URLSearchParams();
   if (params.q) search.set("q", params.q);
   if (params.status) search.set("status", params.status);
+  if (params.tag) search.set("tag", params.tag);
   if (params.page) search.set("page", String(params.page));
   if (params.pageSize) search.set("pageSize", String(params.pageSize));
 

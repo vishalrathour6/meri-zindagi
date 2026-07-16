@@ -18,13 +18,15 @@ const dueDate = z
   .optional();
 export const taskStatuses = ["Pending", "Completed"] as const;
 const status = z.enum(taskStatuses);
+/** Ids of tags to attach to the task. */
+const tagIds = z.array(z.string()).optional();
 
 /** Body for creating a task. Status defaults to Pending in the database. */
-export const createTaskSchema = z.object({ title, description, dueDate });
+export const createTaskSchema = z.object({ title, description, dueDate, tagIds });
 
 /** Body for updating a task — every field optional, but at least one required. */
 export const updateTaskSchema = z
-  .object({ title: title.optional(), description, dueDate, status })
+  .object({ title: title.optional(), description, dueDate, status, tagIds })
   .partial()
   .refine((data) => Object.keys(data).length > 0, {
     message: "Nothing to update",
@@ -34,6 +36,7 @@ export const updateTaskSchema = z
 export const taskQuerySchema = z.object({
   q: z.string().trim().optional(),
   status: status.optional(),
+  tag: z.string().optional(),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(100).default(100),
 });

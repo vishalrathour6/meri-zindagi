@@ -7,9 +7,11 @@ const title = z
   .min(1, "Title is required")
   .max(200, "Title is too long");
 const content = z.string().trim().min(1, "Write something before saving");
+/** Ids of tags to attach to the entry. */
+const tagIds = z.array(z.string()).optional();
 
 /** Body for creating a diary entry. */
-export const createDiarySchema = z.object({ title, content });
+export const createDiarySchema = z.object({ title, content, tagIds });
 
 /**
  * Body for updating an entry. Every field is optional (PATCH semantics) but at
@@ -28,6 +30,7 @@ export const diaryQuerySchema = z.object({
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, "Expected a YYYY-MM-DD date")
     .optional(),
+  tag: z.string().optional(),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(100).default(10),
 });

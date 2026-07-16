@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import { ALL_TAGS } from "@/features/tags/components/TagFilterSelect";
 
 import type { Diary, DiaryListParams } from "../api";
 import { useDeleteDiary, useDiaries } from "../hooks";
@@ -20,6 +21,7 @@ export function DiaryWorkspace() {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search);
   const [date, setDate] = useState<Date | undefined>(undefined);
+  const [tag, setTag] = useState<string>(ALL_TAGS);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Diary | null>(null);
@@ -28,10 +30,11 @@ export function DiaryWorkspace() {
     () => ({
       q: debouncedSearch.trim() || undefined,
       date: date ? toDateParam(date) : undefined,
+      tag: tag === ALL_TAGS ? undefined : tag,
       page: 1,
       pageSize: 100,
     }),
-    [debouncedSearch, date],
+    [debouncedSearch, date, tag],
   );
 
   const { data, isLoading, isError } = useDiaries(params);
@@ -83,6 +86,8 @@ export function DiaryWorkspace() {
             onSearchChange={setSearch}
             date={date}
             onDateChange={setDate}
+            tag={tag}
+            onTagChange={setTag}
             onNew={handleNew}
           />
           <Separator />

@@ -9,6 +9,7 @@ export type Diary = {
   userId: string;
   title: string;
   content: string;
+  tags: { id: string; name: string; color: string }[];
   createdAt: string;
   updatedAt: string;
 };
@@ -16,6 +17,7 @@ export type Diary = {
 export type DiaryListParams = {
   q?: string;
   date?: string;
+  tag?: string;
   page?: number;
   pageSize?: number;
 };
@@ -39,6 +41,7 @@ export async function fetchDiaries(
   const search = new URLSearchParams();
   if (params.q) search.set("q", params.q);
   if (params.date) search.set("date", params.date);
+  if (params.tag) search.set("tag", params.tag);
   if (params.page) search.set("page", String(params.page));
   if (params.pageSize) search.set("pageSize", String(params.pageSize));
 
