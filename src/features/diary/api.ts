@@ -1,4 +1,4 @@
-import type { CreateDiaryInput, UpdateDiaryInput } from "./schemas";
+import type { CreateDiaryInput, Mood, UpdateDiaryInput } from "./schemas";
 
 /**
  * Client-facing diary shape. Dates cross the wire as ISO strings (JSON has no
@@ -9,6 +9,8 @@ export type Diary = {
   userId: string;
   title: string;
   content: string;
+  mood: Mood | null;
+  tags: { id: string; name: string; color: string }[];
   createdAt: string;
   updatedAt: string;
 };
@@ -16,6 +18,8 @@ export type Diary = {
 export type DiaryListParams = {
   q?: string;
   date?: string;
+  tag?: string;
+  mood?: Mood;
   page?: number;
   pageSize?: number;
 };
@@ -39,6 +43,8 @@ export async function fetchDiaries(
   const search = new URLSearchParams();
   if (params.q) search.set("q", params.q);
   if (params.date) search.set("date", params.date);
+  if (params.tag) search.set("tag", params.tag);
+  if (params.mood) search.set("mood", params.mood);
   if (params.page) search.set("page", String(params.page));
   if (params.pageSize) search.set("pageSize", String(params.pageSize));
 

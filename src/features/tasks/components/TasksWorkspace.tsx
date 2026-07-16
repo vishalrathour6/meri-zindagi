@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
+import { ALL_TAGS } from "@/features/tags/components/TagFilterSelect";
 
 import type { Task, TaskListParams } from "../api";
 import { useDeleteTask, useTasks, useUpdateTask } from "../hooks";
@@ -18,6 +19,8 @@ export function TasksWorkspace() {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search);
   const [status, setStatus] = useState<StatusFilter>("all");
+  const [priority, setPriority] = useState<string>(ALL_TAGS);
+  const [tag, setTag] = useState<string>(ALL_TAGS);
   const [formOpen, setFormOpen] = useState(false);
   const [formTask, setFormTask] = useState<Task | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Task | null>(null);
@@ -26,10 +29,15 @@ export function TasksWorkspace() {
     () => ({
       q: debouncedSearch.trim() || undefined,
       status: status === "all" ? undefined : status,
+      priority:
+        priority === ALL_TAGS
+          ? undefined
+          : (priority as TaskListParams["priority"]),
+      tag: tag === ALL_TAGS ? undefined : tag,
       page: 1,
       pageSize: 100,
     }),
-    [debouncedSearch, status],
+    [debouncedSearch, status, priority, tag],
   );
 
   const { data, isLoading, isError } = useTasks(params);
@@ -85,6 +93,10 @@ export function TasksWorkspace() {
           onSearchChange={setSearch}
           status={status}
           onStatusChange={setStatus}
+          priority={priority}
+          onPriorityChange={setPriority}
+          tag={tag}
+          onTagChange={setTag}
           onNew={handleNew}
         />
         <Separator />

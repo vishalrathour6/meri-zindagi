@@ -16,7 +16,9 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { TagPicker } from "@/features/tags/components/TagPicker";
 
+import { MoodPicker } from "./MoodPicker";
 import type { Diary } from "../api";
 import { useCreateDiary, useUpdateDiary } from "../hooks";
 import { createDiarySchema, type CreateDiaryInput } from "../schemas";
@@ -43,6 +45,8 @@ export function DiaryEditor({
     defaultValues: {
       title: entry?.title ?? "",
       content: entry?.content ?? "",
+      tagIds: entry?.tags.map((tag) => tag.id) ?? [],
+      mood: entry?.mood ?? null,
     },
   });
 
@@ -54,7 +58,7 @@ export function DiaryEditor({
       } else {
         const created = await createMutation.mutateAsync(values);
         toast.success("Entry saved.");
-        form.reset({ title: "", content: "" });
+        form.reset({ title: "", content: "", tagIds: [], mood: null });
         onCreated(created);
       }
     } catch (error) {
@@ -121,6 +125,38 @@ export function DiaryEditor({
                     placeholder="Write about your day…"
                     className="min-h-[240px] flex-1 resize-none"
                     {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="tagIds"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Tags</FormLabel>
+                <FormControl>
+                  <TagPicker
+                    value={field.value ?? []}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="mood"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Mood</FormLabel>
+                <FormControl>
+                  <MoodPicker
+                    value={field.value ?? null}
+                    onChange={field.onChange}
                   />
                 </FormControl>
                 <FormMessage />

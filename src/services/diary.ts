@@ -1,4 +1,4 @@
-import type { Diary } from "@/generated/prisma/client";
+import type { Diary, Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
 import type {
@@ -6,6 +6,7 @@ import type {
   DiaryQuery,
   UpdateDiaryInput,
 } from "@/features/diary/schemas";
+import { resolveOwnedTagIds } from "@/services/tags";
 
 /**
  * Diary data-access layer. Every function is scoped by `userId` so a user can
@@ -13,8 +14,16 @@ import type {
  * Reused by the diary route handlers today and by the dashboard summary later.
  */
 
+/** Tag fields returned alongside each entry. */
+const tagSelect = { id: true, name: true, color: true } as const;
+
+/** An entry plus its (lightweight) tags — the shape returned to clients. */
+export type DiaryWithTags = Diary & {
+  tags: { id: string; name: string; color: string }[];
+};
+
 export type DiaryListResult = {
-  items: Diary[];
+  items: DiaryWithTags[];
   total: number;
   page: number;
   pageSize: number;
@@ -30,16 +39,18 @@ function dayRange(date: string): { gte: Date; lt: Date } {
 
 export async function listDiaries(
   userId: string,
-  { q, date, page, pageSize }: DiaryQuery,
+  { q, date, tag, mood, page, pageSize }: DiaryQuery,
 ): Promise<DiaryListResult> {
-  const where = {
+  const where: Prisma.DiaryWhereInput = {
     userId,
     ...(date ? { createdAt: dayRange(date) } : {}),
+    ...(tag ? { tags: { some: { id: tag } } } : {}),
+    ...(mood ? { mood } : {}),
     ...(q
       ? {
           OR: [
-            { title: { contains: q, mode: "insensitive" as const } },
-            { content: { contains: q, mode: "insensitive" as const } },
+            { title: { contains: q, mode: "insensitive" } },
+            { content: { contains: q, mode: "insensitive" } },
           ],
         }
       : {}),
@@ -51,6 +62,7 @@ export async function listDiaries(
       orderBy: { createdAt: "desc" },
       skip: (page - 1) * pageSize,
       take: pageSize,
+      include: { tags: { select: tagSelect } },
     }),
     prisma.diary.count({ where }),
   ]);
@@ -61,29 +73,55 @@ export async function listDiaries(
 export async function getDiary(
   userId: string,
   id: string,
-): Promise<Diary | null> {
-  return prisma.diary.findFirst({ where: { id, userId } });
+): Promise<DiaryWithTags | null> {
+  return prisma.diary.findFirst({
+    where: { id, userId },
+    include: { tags: { select: tagSelect } },
+  });
 }
 
 export async function createDiary(
   userId: string,
-  data: CreateDiaryInput,
-): Promise<Diary> {
-  return prisma.diary.create({ data: { ...data, userId } });
+  input: CreateDiaryInput,
+): Promise<DiaryWithTags> {
+  const { tagIds, ...rest } = input;
+  const ownedTagIds = await resolveOwnedTagIds(userId, tagIds);
+  return prisma.diary.create({
+    data: {
+      ...rest,
+      userId,
+      tags: { connect: ownedTagIds.map((id) => ({ id })) },
+    },
+    include: { tags: { select: tagSelect } },
+  });
 }
 
 /** Returns the updated entry, or `null` if it doesn't belong to the user. */
 export async function updateDiary(
   userId: string,
   id: string,
-  data: UpdateDiaryInput,
-): Promise<Diary | null> {
-  const { count } = await prisma.diary.updateMany({
+  input: UpdateDiaryInput,
+): Promise<DiaryWithTags | null> {
+  // Relation writes can't go through `updateMany`, so confirm ownership first,
+  // then `update` by id (which we now know belongs to this user).
+  const owned = await prisma.diary.findFirst({
     where: { id, userId },
-    data,
+    select: { id: true },
   });
-  if (count === 0) return null;
-  return prisma.diary.findFirst({ where: { id, userId } });
+  if (!owned) return null;
+
+  const { tagIds, ...rest } = input;
+  const data: Prisma.DiaryUpdateInput = { ...rest };
+  if (tagIds !== undefined) {
+    const ownedTagIds = await resolveOwnedTagIds(userId, tagIds);
+    data.tags = { set: ownedTagIds.map((tagId) => ({ id: tagId })) };
+  }
+
+  return prisma.diary.update({
+    where: { id },
+    data,
+    include: { tags: { select: tagSelect } },
+  });
 }
 
 /** Returns `true` if an entry was deleted, `false` if none matched the user. */
