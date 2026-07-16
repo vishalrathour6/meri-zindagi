@@ -22,6 +22,7 @@ export function DiaryWorkspace() {
   const debouncedSearch = useDebouncedValue(search);
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [tag, setTag] = useState<string>(ALL_TAGS);
+  const [mood, setMood] = useState<string>(ALL_TAGS);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Diary | null>(null);
@@ -31,10 +32,11 @@ export function DiaryWorkspace() {
       q: debouncedSearch.trim() || undefined,
       date: date ? toDateParam(date) : undefined,
       tag: tag === ALL_TAGS ? undefined : tag,
+      mood: mood === ALL_TAGS ? undefined : (mood as DiaryListParams["mood"]),
       page: 1,
       pageSize: 100,
     }),
-    [debouncedSearch, date, tag],
+    [debouncedSearch, date, tag, mood],
   );
 
   const { data, isLoading, isError } = useDiaries(params);
@@ -88,6 +90,8 @@ export function DiaryWorkspace() {
             onDateChange={setDate}
             tag={tag}
             onTagChange={setTag}
+            mood={mood}
+            onMoodChange={setMood}
             onNew={handleNew}
           />
           <Separator />

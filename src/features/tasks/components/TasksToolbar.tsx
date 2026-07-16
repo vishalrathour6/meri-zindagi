@@ -14,6 +14,8 @@ import {
 import { TagFilterSelect } from "@/features/tags/components/TagFilterSelect";
 
 import type { TaskStatus } from "../schemas";
+import { priorities } from "../schemas";
+import { PRIORITY_META } from "../priority";
 
 export type StatusFilter = TaskStatus | "all";
 
@@ -22,6 +24,8 @@ type TasksToolbarProps = {
   onSearchChange: (value: string) => void;
   status: StatusFilter;
   onStatusChange: (value: StatusFilter) => void;
+  priority: string;
+  onPriorityChange: (value: string) => void;
   tag: string;
   onTagChange: (value: string) => void;
   onNew: () => void;
@@ -32,6 +36,8 @@ export function TasksToolbar({
   onSearchChange,
   status,
   onStatusChange,
+  priority,
+  onPriorityChange,
   tag,
   onTagChange,
   onNew,
@@ -59,6 +65,19 @@ export function TasksToolbar({
           <SelectItem value="all">All tasks</SelectItem>
           <SelectItem value="Pending">Pending</SelectItem>
           <SelectItem value="Completed">Completed</SelectItem>
+        </SelectContent>
+      </Select>
+      <Select value={priority} onValueChange={onPriorityChange}>
+        <SelectTrigger className="sm:w-40" aria-label="Filter by priority">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All priorities</SelectItem>
+          {priorities.map((p) => (
+            <SelectItem key={p} value={p}>
+              {PRIORITY_META[p].label}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
       <TagFilterSelect

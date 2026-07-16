@@ -5,6 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TagBadge } from "@/features/tags/components/TagBadge";
 
+import { MOOD_META } from "../mood";
 import type { Diary } from "../api";
 import { formatDateLabel, snippet } from "../utils";
 
@@ -67,7 +68,14 @@ export function DiaryList({
                 entry.id === selectedId && "border-primary bg-accent",
               )}
             >
-              <p className="truncate font-medium">{entry.title}</p>
+              <p className="flex items-center gap-1.5 truncate font-medium">
+                {entry.mood ? (
+                  <span aria-label={MOOD_META[entry.mood].label} title={MOOD_META[entry.mood].label}>
+                    {MOOD_META[entry.mood].emoji}
+                  </span>
+                ) : null}
+                <span className="truncate">{entry.title}</span>
+              </p>
               <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">
                 {snippet(entry.content)}
               </p>

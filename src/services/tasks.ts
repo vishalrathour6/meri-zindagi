@@ -36,11 +36,12 @@ function parseDueDate(value: string | null | undefined): Date | null {
 
 export async function listTasks(
   userId: string,
-  { q, status, tag, page, pageSize }: TaskQuery,
+  { q, status, priority, tag, page, pageSize }: TaskQuery,
 ): Promise<TaskListResult> {
   const where: Prisma.TaskWhereInput = {
     userId,
     ...(status ? { status } : {}),
+    ...(priority ? { priority } : {}),
     ...(tag ? { tags: { some: { id: tag } } } : {}),
     ...(q
       ? {
@@ -55,7 +56,8 @@ export async function listTasks(
   const [items, total] = await Promise.all([
     prisma.task.findMany({
       where,
-      orderBy: { createdAt: "desc" },
+      // Enum sorts by declared order (Low, Medium, High), so `desc` = High first.
+      orderBy: [{ priority: "desc" }, { createdAt: "desc" }],
       skip: (page - 1) * pageSize,
       take: pageSize,
       include: { tags: { select: tagSelect } },
@@ -87,6 +89,7 @@ export async function createTask(
       title: input.title,
       description: input.description || null,
       dueDate: parseDueDate(input.dueDate),
+      priority: input.priority ?? "Medium",
       tags: { connect: ownedTagIds.map((id) => ({ id })) },
     },
     include: { tags: { select: tagSelect } },
@@ -113,6 +116,7 @@ export async function updateTask(
     data.description = input.description || null;
   if (input.dueDate !== undefined) data.dueDate = parseDueDate(input.dueDate);
   if (input.status !== undefined) data.status = input.status;
+  if (input.priority !== undefined) data.priority = input.priority;
   if (input.tagIds !== undefined) {
     const ownedTagIds = await resolveOwnedTagIds(userId, input.tagIds);
     data.tags = { set: ownedTagIds.map((tagId) => ({ id: tagId })) };

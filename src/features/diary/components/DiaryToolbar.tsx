@@ -10,9 +10,18 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { TagFilterSelect } from "@/features/tags/components/TagFilterSelect";
 
 import { formatDateLabel } from "../utils";
+import { moods } from "../schemas";
+import { MOOD_META } from "../mood";
 
 type DiaryToolbarProps = {
   search: string;
@@ -21,6 +30,8 @@ type DiaryToolbarProps = {
   onDateChange: (date: Date | undefined) => void;
   tag: string;
   onTagChange: (value: string) => void;
+  mood: string;
+  onMoodChange: (value: string) => void;
   onNew: () => void;
 };
 
@@ -31,6 +42,8 @@ export function DiaryToolbar({
   onDateChange,
   tag,
   onTagChange,
+  mood,
+  onMoodChange,
   onNew,
 }: DiaryToolbarProps) {
   return (
@@ -82,11 +95,20 @@ export function DiaryToolbar({
             Clear
           </Button>
         ) : null}
-        <TagFilterSelect
-          value={tag}
-          onChange={onTagChange}
-          className="ml-auto w-36"
-        />
+        <Select value={mood} onValueChange={onMoodChange}>
+          <SelectTrigger className="ml-auto w-32" aria-label="Filter by mood">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All moods</SelectItem>
+            {moods.map((m) => (
+              <SelectItem key={m} value={m}>
+                {MOOD_META[m].emoji} {MOOD_META[m].label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <TagFilterSelect value={tag} onChange={onTagChange} className="w-36" />
       </div>
     </div>
   );

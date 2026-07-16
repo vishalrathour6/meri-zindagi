@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { formatDateLabel, snippet } from "@/lib/format";
 import { TagBadge } from "@/features/tags/components/TagBadge";
 
+import { PRIORITY_META } from "../priority";
 import type { Task } from "../api";
 
 type TaskItemProps = {
@@ -53,16 +54,23 @@ export function TaskItem({ task, onToggle, onEdit, onDelete }: TaskItemProps) {
             {snippet(task.description)}
           </p>
         ) : null}
-        {task.dueDate ? (
+        <div className="mt-2 flex flex-wrap items-center gap-1.5">
           <Badge
-            variant={overdue ? "destructive" : "secondary"}
-            className="mt-2 font-normal"
+            className={cn("font-normal", PRIORITY_META[task.priority].badgeClass)}
           >
-            <CalendarClock className="mr-1 size-3" />
-            {overdue ? "Overdue · " : "Due "}
-            {formatDateLabel(task.dueDate)}
+            {PRIORITY_META[task.priority].label}
           </Badge>
-        ) : null}
+          {task.dueDate ? (
+            <Badge
+              variant={overdue ? "destructive" : "secondary"}
+              className="font-normal"
+            >
+              <CalendarClock className="mr-1 size-3" />
+              {overdue ? "Overdue · " : "Due "}
+              {formatDateLabel(task.dueDate)}
+            </Badge>
+          ) : null}
+        </div>
         {task.tags.length > 0 ? (
           <div className="mt-2 flex flex-wrap gap-1">
             {task.tags.map((tag) => (

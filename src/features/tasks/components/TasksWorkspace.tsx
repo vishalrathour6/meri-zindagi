@@ -19,6 +19,7 @@ export function TasksWorkspace() {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search);
   const [status, setStatus] = useState<StatusFilter>("all");
+  const [priority, setPriority] = useState<string>(ALL_TAGS);
   const [tag, setTag] = useState<string>(ALL_TAGS);
   const [formOpen, setFormOpen] = useState(false);
   const [formTask, setFormTask] = useState<Task | null>(null);
@@ -28,11 +29,15 @@ export function TasksWorkspace() {
     () => ({
       q: debouncedSearch.trim() || undefined,
       status: status === "all" ? undefined : status,
+      priority:
+        priority === ALL_TAGS
+          ? undefined
+          : (priority as TaskListParams["priority"]),
       tag: tag === ALL_TAGS ? undefined : tag,
       page: 1,
       pageSize: 100,
     }),
-    [debouncedSearch, status, tag],
+    [debouncedSearch, status, priority, tag],
   );
 
   const { data, isLoading, isError } = useTasks(params);
@@ -88,6 +93,8 @@ export function TasksWorkspace() {
           onSearchChange={setSearch}
           status={status}
           onStatusChange={setStatus}
+          priority={priority}
+          onPriorityChange={setPriority}
           tag={tag}
           onTagChange={setTag}
           onNew={handleNew}

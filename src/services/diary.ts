@@ -39,12 +39,13 @@ function dayRange(date: string): { gte: Date; lt: Date } {
 
 export async function listDiaries(
   userId: string,
-  { q, date, tag, page, pageSize }: DiaryQuery,
+  { q, date, tag, mood, page, pageSize }: DiaryQuery,
 ): Promise<DiaryListResult> {
   const where: Prisma.DiaryWhereInput = {
     userId,
     ...(date ? { createdAt: dayRange(date) } : {}),
     ...(tag ? { tags: { some: { id: tag } } } : {}),
+    ...(mood ? { mood } : {}),
     ...(q
       ? {
           OR: [

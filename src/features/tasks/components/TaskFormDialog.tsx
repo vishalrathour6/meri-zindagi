@@ -31,17 +31,27 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDateLabel, toDateParam } from "@/lib/format";
 import { TagPicker } from "@/features/tags/components/TagPicker";
 
 import type { Task, TaskListParams } from "../api";
 import { useCreateTask, useUpdateTask } from "../hooks";
+import { priorities } from "../schemas";
+import { PRIORITY_META } from "../priority";
 
 const formSchema = z.object({
   title: z.string().trim().min(1, "Title is required").max(200, "Title is too long"),
   description: z.string().trim().max(2000, "Description is too long"),
   dueDate: z.date().optional(),
+  priority: z.enum(priorities),
   tagIds: z.array(z.string()),
 });
 
@@ -67,7 +77,13 @@ export function TaskFormDialog({
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
-    defaultValues: { title: "", description: "", dueDate: undefined, tagIds: [] },
+    defaultValues: {
+      title: "",
+      description: "",
+      dueDate: undefined,
+      priority: "Medium",
+      tagIds: [],
+    },
   });
 
   // Reset the form to match the selected task each time the dialog opens.
@@ -77,6 +93,7 @@ export function TaskFormDialog({
         title: task?.title ?? "",
         description: task?.description ?? "",
         dueDate: task?.dueDate ? new Date(task.dueDate) : undefined,
+        priority: task?.priority ?? "Medium",
         tagIds: task?.tags.map((tag) => tag.id) ?? [],
       });
     }
@@ -89,7 +106,13 @@ export function TaskFormDialog({
       if (isEditing) {
         await updateMutation.mutateAsync({
           id: task.id,
-          input: { title: values.title, description, dueDate, tagIds: values.tagIds },
+          input: {
+            title: values.title,
+            description,
+            dueDate,
+            priority: values.priority,
+            tagIds: values.tagIds,
+          },
         });
         toast.success("Task updated.");
       } else {
@@ -97,6 +120,7 @@ export function TaskFormDialog({
           title: values.title,
           description,
           dueDate,
+          priority: values.priority,
           tagIds: values.tagIds,
         });
         toast.success("Task added.");
@@ -195,6 +219,30 @@ export function TaskFormDialog({
                       </Button>
                     ) : null}
                   </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="priority"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Priority</FormLabel>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {priorities.map((p) => (
+                        <SelectItem key={p} value={p}>
+                          {PRIORITY_META[p].label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}

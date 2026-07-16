@@ -1,5 +1,6 @@
 import type {
   CreateTaskInput,
+  TaskPriority,
   TaskStatus,
   UpdateTaskInput,
 } from "./schemas";
@@ -14,6 +15,7 @@ export type Task = {
   title: string;
   description: string | null;
   status: TaskStatus;
+  priority: TaskPriority;
   dueDate: string | null;
   tags: { id: string; name: string; color: string }[];
   createdAt: string;
@@ -23,6 +25,7 @@ export type Task = {
 export type TaskListParams = {
   q?: string;
   status?: TaskStatus;
+  priority?: TaskPriority;
   tag?: string;
   page?: number;
   pageSize?: number;
@@ -46,6 +49,7 @@ export async function fetchTasks(
   const search = new URLSearchParams();
   if (params.q) search.set("q", params.q);
   if (params.status) search.set("status", params.status);
+  if (params.priority) search.set("priority", params.priority);
   if (params.tag) search.set("tag", params.tag);
   if (params.page) search.set("page", String(params.page));
   if (params.pageSize) search.set("pageSize", String(params.pageSize));
