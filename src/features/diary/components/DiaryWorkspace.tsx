@@ -82,7 +82,7 @@ export function DiaryWorkspace() {
   return (
     <>
       <Card className="grid gap-0 p-0 md:grid-cols-[320px_1fr]">
-        <div className="flex flex-col gap-4 p-4">
+        <div className="flex min-w-0 flex-col gap-4 p-4">
           <DiaryToolbar
             search={search}
             onSearchChange={setSearch}
@@ -104,7 +104,7 @@ export function DiaryWorkspace() {
           />
         </div>
 
-        <div className="border-t p-4 md:border-t-0 md:border-l md:p-6">
+        <div className="min-w-0 border-t p-4 md:border-t-0 md:border-l md:p-6">
           {showEditor ? (
             <DiaryEditor
               key={selected?.id ?? "new"}

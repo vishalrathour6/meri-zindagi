@@ -64,7 +64,7 @@ export function DiaryToolbar({
         </Button>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -96,7 +96,7 @@ export function DiaryToolbar({
           </Button>
         ) : null}
         <Select value={mood} onValueChange={onMoodChange}>
-          <SelectTrigger className="ml-auto w-32" aria-label="Filter by mood">
+          <SelectTrigger className="w-full flex-1 min-w-28" aria-label="Filter by mood">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -108,7 +108,11 @@ export function DiaryToolbar({
             ))}
           </SelectContent>
         </Select>
-        <TagFilterSelect value={tag} onChange={onTagChange} className="w-36" />
+        <TagFilterSelect
+          value={tag}
+          onChange={onTagChange}
+          className="w-full flex-1 min-w-28"
+        />
       </div>
     </div>
   );
