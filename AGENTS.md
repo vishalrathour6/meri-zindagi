@@ -46,10 +46,19 @@ trust them over prior knowledge.
 - **Protected pages:** `src/auth.config.ts` has a hardcoded `PROTECTED_PREFIXES`
   array — add any new top-level protected route there or it won't redirect
   unauthenticated users.
+- **Linting:** `eslint.config.mjs` ignores `src/generated/**` (Prisma client) and
+  `.claude/**` (Claude Code skills/agents — isolated package.json/lockfile, not
+  application source; `driver.cjs` is intentionally CommonJS).
 - **Package manager:** pnpm only (`packageManager` pin + lockfile matter for
   Vercel build parity — don't bump the pnpm version without regenerating the
-  lockfile). Scripts: `dev`, `build`, `lint`, `typecheck`, `format`, `db:generate`,
-  `db:migrate`. There is no `test` script.
+  lockfile). Scripts: `dev`, `build`, `lint`, `typecheck`, `format`, `test`,
+  `test:watch`, `db:generate`, `db:migrate`.
+- **Unit tests:** Vitest (`vitest.config.mts`, alias `@` → `./src`,
+  `environment: "node"`). Colocated `*.test.ts` files, currently covering
+  `src/lib/*`, `src/features/tags/colors.ts`, and the Zod schemas in
+  `src/features/*/schemas.ts` — pure-logic unit tests only, no component
+  rendering or route-handler tests yet. `pnpm test` runs once; `pnpm test:watch`
+  for watch mode.
 - **Env vars:** `DATABASE_URL` (pooled) vs `DIRECT_URL` (direct — used by
   `prisma.config.ts` for migrations/CLI). Run `db:migrate` with `DIRECT_URL` set,
   or a pooled-only URL can hit PgBouncer prepared-statement errors. `AUTH_SECRET`
@@ -67,6 +76,8 @@ trust them over prior knowledge.
 - **Deployment:** Vercel + Neon, no Dockerfile/vercel.json — don't introduce one
   assuming a different target.
 - **`docs/`:** background on architecture/requirements, but
-  `docs/CODING_STANDARDS.md`'s Testing and Tooling sections (Vitest, Playwright,
-  Husky, Commitlint) are aspirational — none of that is actually installed.
+  `docs/CODING_STANDARDS.md`'s Testing section is now partly real (Vitest unit
+  tests exist, see above) and partly still aspirational (Playwright e2e doesn't);
+  its Tooling section's Husky/Commitlint claims are still aspirational — neither
+  is installed.
 - **Never commit** until the user explicitly says so.

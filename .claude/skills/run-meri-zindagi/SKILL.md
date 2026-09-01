@@ -109,9 +109,12 @@ pnpm dev   # → http://localhost:3000, Ctrl-C to stop
 
 ## Test
 
-No test script exists in this repo (`docs/CODING_STANDARDS.md`'s
-Vitest/Playwright section is aspirational — nothing is installed).
-`node driver.cjs smoke` is the closest thing to an end-to-end check.
+`pnpm test` (Vitest) exists but only covers pure-logic unit tests
+(`src/lib/*`, Zod schemas, `src/features/tags/colors.ts`) — see the
+`feature-development` skill. There's no Playwright/e2e runner
+(`docs/CODING_STANDARDS.md`'s Playwright section is still aspirational).
+`node driver.cjs smoke` remains the closest thing to an end-to-end check
+for the diary/tasks/auth flow.
 
 ---
 

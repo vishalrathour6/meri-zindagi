@@ -72,9 +72,13 @@ are drawn from):
 - New diary/tasks/tags/profile/auth components belong under
   `src/features/<feature>/components/`, not `src/components/<feature>/` — the latter
   are empty `.gitkeep` placeholders, not the real location.
-- There is no test suite in this repo — never ask for "add a unit test" or "add
-  coverage." The available validation gates are `pnpm lint`, `pnpm typecheck`,
-  `pnpm build`, and, for UI-affecting changes, the `run-meri-zindagi` skill's smoke flow.
+- `pnpm test` (Vitest) exists but only covers pure-logic unit tests — `src/lib/*`,
+  Zod schemas in `src/features/*/schemas.ts`, `src/features/tags/colors.ts`. It's
+  reasonable to ask for a colocated `*.test.ts` when changed code falls in those
+  categories. There's still no component-rendering, route-handler, or e2e test
+  setup — don't ask for "add a test" for React components or API routes; the
+  available gates there are `pnpm lint`, `pnpm typecheck`, `pnpm build`, and, for
+  UI-affecting changes, the `run-meri-zindagi` skill's smoke flow.
 
 ## Output format
 

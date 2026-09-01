@@ -47,12 +47,15 @@ Details and copy-paste-able shapes for steps 2–3 are in
 
 ## Validation
 
-There is no test runner in this repo (`docs/CODING_STANDARDS.md`'s Vitest/Playwright
-section is aspirational — see AGENTS.md). After changing code, run:
-
 ```bash
-pnpm lint && pnpm typecheck && pnpm build
+pnpm lint && pnpm typecheck && pnpm test && pnpm build
 ```
+
+`pnpm test` (Vitest) covers pure-logic unit tests only — `src/lib/*`, Zod schemas in
+`src/features/*/schemas.ts`, `src/features/tags/colors.ts`. Add a colocated `*.test.ts`
+next to new/changed code in those categories. There's no component-rendering or
+route-handler test setup (no jsdom, no request mocking) and no Playwright e2e runner —
+`docs/CODING_STANDARDS.md`'s Playwright section is still aspirational (see AGENTS.md).
 
 For UI-affecting changes, use the `run-meri-zindagi` skill's `smoke`/`shot` driver
 commands to see the change working in a real browser — that's the closest thing to an

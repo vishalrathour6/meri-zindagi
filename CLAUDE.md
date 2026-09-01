@@ -13,8 +13,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm format` — Prettier, writes in place.
 - `pnpm db:generate` — regenerate the Prisma client (also runs automatically via `postinstall`).
 - `pnpm db:migrate` — `prisma migrate dev`; run with `DIRECT_URL` set (see AGENTS.md env-vars note).
-- There is no `test` script and no test runner installed — `docs/CODING_STANDARDS.md`'s
-  Vitest/Playwright/Husky/Commitlint sections are aspirational, not present in this repo.
+- `pnpm test` — Vitest, runs once (`pnpm test:watch` for watch mode). Covers pure-logic
+  unit tests only (`src/lib/*`, Zod schemas in `src/features/*/schemas.ts`, `src/features/tags/colors.ts`)
+  — colocated as `*.test.ts`, `environment: "node"` (no jsdom/component rendering).
+  `docs/CODING_STANDARDS.md`'s Playwright/Husky/Commitlint sections are still aspirational,
+  not present in this repo.
 
 ## Architecture notes
 
