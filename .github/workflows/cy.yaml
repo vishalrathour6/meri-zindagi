@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Generate Next.js route types
+        run: pnpm exec next typegen
+
       - name: Next.js Lint
         run: pnpm lint
 
