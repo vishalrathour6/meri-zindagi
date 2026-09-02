@@ -29,13 +29,13 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Next.js Lint
-        run: pnpm next lint
+        run: pnpm lint
 
       - name: Next.js Typecheck
-        run: pnpm tsc --noEmit # Assumes you are using TypeScript; remove if JS
+        run: pnpm tsc --noEmit
 
       - name: Run Tests
-        run: pnpm test # Will run your Jest/Vitest/Playwright tests if defined
+        run: pnpm test
 
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
