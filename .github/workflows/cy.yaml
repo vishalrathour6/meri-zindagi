@@ -1,0 +1,55 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+permissions:
+  contents: read
+  deployments: write
+  pull-requests: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Next.js route types
+        run: pnpm exec next typegen
+
+      - name: Next.js Lint
+        run: pnpm lint
+
+      - name: Next.js Typecheck
+        run: pnpm tsc --noEmit
+
+      - name: Run Tests
+        run: pnpm test
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v42
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.ORG_ID }}
+          vercel-project-id: ${{ secrets.PROJECT_ID }}
+          # CONDITION: If the branch is main or master, add '--prod' flag, otherwise leave blank for preview
+          vercel-args: ${{ (github.ref_name == 'main' || github.ref_name == 'master') && '--prod' || '' }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-deployment: true
