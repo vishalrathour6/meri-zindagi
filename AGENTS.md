@@ -30,6 +30,54 @@ trust them over prior knowledge.
 - **Validation:** Zod v4 schemas colocated in `src/features/<feature>/schemas.ts`.
 - **shadcn/ui:** add components with `pnpm dlx shadcn@latest add <name> -y` →
   lands in `src/components/ui`. Icons: `lucide-react`. Toasts: `sonner`.
-- **Feature structure:** feature code lives under `src/features/<feature>/`
-  (`schemas.ts`, `actions.ts` server actions, `components/`).
+- **Feature structure:** two coexisting patterns under `src/features/<feature>/` —
+  match whichever one the feature you're touching already uses; don't mix them.
+  - `auth`, `profile`: `schemas.ts` + `actions.ts` (server actions, `"use server"`)
+    + `components/`.
+  - `diary`, `tasks`, `tags`: `schemas.ts` + `api.ts` (fetch wrappers) + `hooks.ts`
+    (TanStack Query hooks, query-key factories, optimistic updates) + `components/`,
+    backed by `src/app/api/<feature>/route.ts` → `src/services/<feature>.ts`.
+- **`src/services/`:** business logic and Prisma calls live here, not in route
+  handlers or actions. Services always scope queries by `userId` — the id alone
+  is never trusted.
+- **API routes self-guard auth:** `src/proxy.ts`'s matcher excludes `/api`, so
+  every route handler calls `auth()` and returns `unauthorized()` itself. Reuse
+  the shared helpers in `src/lib/api.ts` (`unauthorized`, `badRequest`, `notFound`).
+- **Protected pages:** `src/auth.config.ts` has a hardcoded `PROTECTED_PREFIXES`
+  array — add any new top-level protected route there or it won't redirect
+  unauthenticated users.
+- **Linting:** `eslint.config.mjs` ignores `src/generated/**` (Prisma client) and
+  `.claude/**` (Claude Code skills/agents — isolated package.json/lockfile, not
+  application source; `driver.cjs` is intentionally CommonJS).
+- **Package manager:** pnpm only (`packageManager` pin + lockfile matter for
+  Vercel build parity — don't bump the pnpm version without regenerating the
+  lockfile). Scripts: `dev`, `build`, `lint`, `typecheck`, `format`, `test`,
+  `test:watch`, `db:generate`, `db:migrate`.
+- **Unit tests:** Vitest (`vitest.config.mts`, alias `@` → `./src`,
+  `environment: "node"`). Colocated `*.test.ts` files, currently covering
+  `src/lib/*`, `src/features/tags/colors.ts`, and the Zod schemas in
+  `src/features/*/schemas.ts` — pure-logic unit tests only, no component
+  rendering or route-handler tests yet. `pnpm test` runs once; `pnpm test:watch`
+  for watch mode.
+- **Env vars:** `DATABASE_URL` (pooled) vs `DIRECT_URL` (direct — used by
+  `prisma.config.ts` for migrations/CLI). Run `db:migrate` with `DIRECT_URL` set,
+  or a pooled-only URL can hit PgBouncer prepared-statement errors. `AUTH_SECRET`
+  via `npx auth secret`. Neon is the Postgres provider.
+- **DB retry wrapper:** `src/lib/prisma.ts` wraps all queries via
+  `src/lib/db-retry.ts` (`$extends`) to retry Neon cold-start connection errors.
+  Keep this when touching the Prisma client setup.
+- **PWA:** hand-written `public/sw.js` (no Workbox) — bump `CACHE_VERSION` when
+  changing caching behavior or the change is a no-op for existing installs. SW
+  registration is intentionally disabled under `next dev` (fights Turbopack).
+  `src/app/manifest.ts` is Next's `MetadataRoute.Manifest` API, not a static
+  JSON file. The TanStack Query cache persists to `localStorage`
+  (`mz-query-cache`) and is cleared on logout — route new query state through
+  the shared `queryClient` to stay consistent.
+- **Deployment:** Vercel + Neon, no Dockerfile/vercel.json — don't introduce one
+  assuming a different target.
+- **`docs/`:** background on architecture/requirements, but
+  `docs/CODING_STANDARDS.md`'s Testing section is now partly real (Vitest unit
+  tests exist, see above) and partly still aspirational (Playwright e2e doesn't);
+  its Tooling section's Husky/Commitlint claims are still aspirational — neither
+  is installed.
 - **Never commit** until the user explicitly says so.

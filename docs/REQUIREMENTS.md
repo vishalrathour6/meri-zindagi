@@ -58,7 +58,7 @@
 
 ## Testing
 
-- [ ] Unit tests (Vitest)
+- [x] Unit tests (Vitest)
 - [ ] Component tests
 - [ ] End-to-end flows (Playwright)
 - [ ] Tests run in CI

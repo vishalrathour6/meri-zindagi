@@ -14,6 +14,9 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Prisma-generated client — not linted.
     "src/generated/**",
+    // Claude Code tooling (skills/agents) — its own isolated package.json/lockfile,
+    // not application source. driver.cjs is intentionally CommonJS.
+    ".claude/**",
   ]),
 ]);
 

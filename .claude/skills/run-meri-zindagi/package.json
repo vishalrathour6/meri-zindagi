@@ -1,0 +1,8 @@
+{
+  "name": "run-meri-zindagi-driver",
+  "private": true,
+  "version": "1.0.0",
+  "dependencies": {
+    "playwright-core": "^1.55.0"
+  }
+}
