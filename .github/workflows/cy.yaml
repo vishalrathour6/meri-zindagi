@@ -50,7 +50,6 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_ID }}
-          # Always a preview deploy: this step only runs for pull_request events.
           vercel-args: ''
           github-token: ${{ secrets.GITHUB_TOKEN }}
           github-deployment: true
