@@ -44,12 +44,12 @@ jobs:
         run: pnpm test
 
       - name: Deploy to Vercel
+        if: github.event_name == 'pull_request'
         uses: amondnet/vercel-action@v42
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.ORG_ID }}
           vercel-project-id: ${{ secrets.PROJECT_ID }}
-          # CONDITION: If the branch is main or master, add '--prod' flag, otherwise leave blank for preview
-          vercel-args: ${{ (github.ref_name == 'main' || github.ref_name == 'master') && '--prod' || '' }}
+          vercel-args: ''
           github-token: ${{ secrets.GITHUB_TOKEN }}
           github-deployment: true
