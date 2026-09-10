@@ -16,6 +16,58 @@ describe("updateProfileSchema", () => {
       updateProfileSchema.safeParse({ name: "a".repeat(101) }).success,
     ).toBe(false);
   });
+
+  it("accepts a valid phone number with a leading plus", () => {
+    const result = updateProfileSchema.safeParse({
+      name: "Jane",
+      phoneNumber: "+14155552671",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts a valid phone number without a leading plus", () => {
+    const result = updateProfileSchema.safeParse({
+      name: "Jane",
+      phoneNumber: "14155552671",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts an empty phone number as not provided", () => {
+    const result = updateProfileSchema.safeParse({
+      name: "Jane",
+      phoneNumber: "",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("accepts an undefined phone number", () => {
+    expect(updateProfileSchema.safeParse({ name: "Jane" }).success).toBe(true);
+  });
+
+  it("rejects a phone number that is too short", () => {
+    const result = updateProfileSchema.safeParse({
+      name: "Jane",
+      phoneNumber: "12345",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a non-numeric phone number", () => {
+    const result = updateProfileSchema.safeParse({
+      name: "Jane",
+      phoneNumber: "+1-415-abc-2671",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects a phone number with a leading zero after the plus sign", () => {
+    const result = updateProfileSchema.safeParse({
+      name: "Jane",
+      phoneNumber: "+0123456789",
+    });
+    expect(result.success).toBe(false);
+  });
 });
 
 describe("changePasswordSchema", () => {

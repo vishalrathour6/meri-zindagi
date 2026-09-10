@@ -26,8 +26,15 @@ export async function updateProfile(input: unknown): Promise<ActionResult> {
     return { ok: false, error: "You must be signed in." };
   }
 
-  const { name } = parsed.data;
-  await prisma.user.update({ where: { id: session.user.id }, data: { name } });
+  const { name, phoneNumber } = parsed.data;
+  try {
+    await prisma.user.update({
+      where: { id: session.user.id },
+      data: { name, phoneNumber: phoneNumber ? phoneNumber : null },
+    });
+  } catch {
+    return { ok: false, error: "Something went wrong. Please try again." };
+  }
   await unstable_update({ user: { name } });
   revalidatePath("/profile");
 
