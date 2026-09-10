@@ -1,8 +1,17 @@
 import { z } from "zod";
 
-/** Update the user's display name. */
+const phoneRegex = /^\+?[1-9]\d{6,14}$/;
+
+/** Update the user's display name and optional phone number. */
 export const updateProfileSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(100, "Name is too long"),
+  phoneNumber: z
+    .string()
+    .trim()
+    .optional()
+    .refine((value) => !value || phoneRegex.test(value), {
+      message: "Enter a valid phone number, e.g. +14155552671",
+    }),
 });
 
 /** Change the user's password — requires the current one for confirmation. */

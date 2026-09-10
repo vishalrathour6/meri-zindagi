@@ -20,11 +20,19 @@ import { Label } from "@/components/ui/label";
 import { updateProfile } from "../actions";
 import { updateProfileSchema, type UpdateProfileInput } from "../schemas";
 
-export function ProfileForm({ name, email }: { name: string; email: string }) {
+export function ProfileForm({
+  name,
+  email,
+  phoneNumber,
+}: {
+  name: string;
+  email: string;
+  phoneNumber: string;
+}) {
   const router = useRouter();
   const form = useForm<UpdateProfileInput>({
     resolver: zodResolver(updateProfileSchema),
-    defaultValues: { name },
+    defaultValues: { name, phoneNumber },
   });
 
   async function onSubmit(values: UpdateProfileInput) {
@@ -50,6 +58,24 @@ export function ProfileForm({ name, email }: { name: string; email: string }) {
               <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input autoComplete="name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="phoneNumber"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Phone number</FormLabel>
+              <FormControl>
+                <Input
+                  type="tel"
+                  autoComplete="tel"
+                  placeholder="+14155552671"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

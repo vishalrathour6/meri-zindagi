@@ -58,7 +58,11 @@ export default async function ProfilePage() {
               </div>
             </CardHeader>
             <CardContent>
-              <ProfileForm name={user.name} email={user.email} />
+              <ProfileForm
+                name={user.name}
+                email={user.email}
+                phoneNumber={user.phoneNumber ?? ""}
+              />
             </CardContent>
           </Card>
 
