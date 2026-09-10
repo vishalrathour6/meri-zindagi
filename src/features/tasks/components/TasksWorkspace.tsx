@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useDebouncedValue } from "@/hooks/use-debounced-value";
-import { ALL_TAGS } from "@/features/tags/components/TagFilterSelect";
+import { ALL_TAGS } from "@/features/tags";
 
 import type { Task, TaskListParams } from "../api";
 import { useDeleteTask, useTasks, useUpdateTask } from "../hooks";

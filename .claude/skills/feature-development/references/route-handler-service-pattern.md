@@ -49,8 +49,8 @@ shape for a new route.
 
 ## Service layer rules
 
-`src/services/<feature>.ts` — doc-commented per file: "Every function is scoped by
-`userId` so a user can only read or mutate their own X."
+`src/features/<feature>/service.ts` — doc-commented per file: "Every function is
+scoped by `userId` so a user can only read or mutate their own X."
 
 - Every exported function takes `userId: string` as its **first** parameter and folds it
   into the Prisma `where` clause via spread-conditionals, e.g.
@@ -63,11 +63,14 @@ shape for a new route.
 - **Deletes** use `deleteMany({ where: { id, userId } })` and check `count > 0` — a
   single atomic query that both scopes by owner and reports whether anything happened.
   No separate existence check needed here (unlike update).
-- **Tag ids must be resolved through `resolveOwnedTagIds(userId, tagIds)`**
-  (`src/services/tags.ts`) before being attached to a task or diary in create/update —
-  this is what prevents a user from attaching another user's tag id to their own
-  record. Call it the same way `services/tasks.ts` and `services/diary.ts` already do;
-  don't attach `tagIds` straight from the request body.
+- **Tag ids must be resolved through `resolveOwnedTagIds(userId, tagIds)`**, imported
+  from `features/tags/server.ts` (defined in `features/tags/service.ts`, but never
+  imported from that internal path, or from `tags/index.ts`, outside the `tags`
+  feature — see `references/cross-feature-boundaries.md`) before being attached to a
+  task or diary in create/update — this is what prevents a user from attaching another
+  user's tag id to their own record. Call it the same way `features/tasks/service.ts`
+  and `features/diary/service.ts` already do; don't attach `tagIds` straight from the
+  request body.
 
 ## Known gap — no Prisma error handling
 

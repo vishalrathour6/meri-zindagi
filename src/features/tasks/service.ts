@@ -1,12 +1,8 @@
 import type { Prisma, Task } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
-import type {
-  CreateTaskInput,
-  TaskQuery,
-  UpdateTaskInput,
-} from "@/features/tasks/schemas";
-import { resolveOwnedTagIds } from "@/services/tags";
+import type { CreateTaskInput, TaskQuery, UpdateTaskInput } from "./schemas";
+import { resolveOwnedTagIds } from "@/features/tags/server";
 
 /**
  * Task data-access layer. Every function is scoped by `userId` so a user can

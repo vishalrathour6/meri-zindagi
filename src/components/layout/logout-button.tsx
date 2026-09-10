@@ -2,7 +2,7 @@
 
 import { LogOutIcon } from "lucide-react";
 
-import { logout } from "@/features/auth/actions";
+import { logout } from "@/features/auth";
 import { Button } from "@/components/ui/button";
 import { QUERY_CACHE_KEY } from "@/app/providers";
 

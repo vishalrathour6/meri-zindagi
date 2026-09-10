@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TagBadge } from "@/features/tags/components/TagBadge";
+import { TagBadge } from "@/features/tags";
 
 import { MOOD_META } from "../mood";
 import type { Diary } from "../api";

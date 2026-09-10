@@ -40,7 +40,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { formatDateLabel, toDateParam } from "@/lib/format";
-import { TagPicker } from "@/features/tags/components/TagPicker";
+import { TagPicker } from "@/features/tags";
 
 import type { Task, TaskListParams } from "../api";
 import { useCreateTask, useUpdateTask } from "../hooks";

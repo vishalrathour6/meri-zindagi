@@ -1,12 +1,8 @@
 import type { Diary, Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
-import type {
-  CreateDiaryInput,
-  DiaryQuery,
-  UpdateDiaryInput,
-} from "@/features/diary/schemas";
-import { resolveOwnedTagIds } from "@/services/tags";
+import type { CreateDiaryInput, DiaryQuery, UpdateDiaryInput } from "./schemas";
+import { resolveOwnedTagIds } from "@/features/tags/server";
 
 /**
  * Diary data-access layer. Every function is scoped by `userId` so a user can

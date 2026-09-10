@@ -36,10 +36,33 @@ trust them over prior knowledge.
     + `components/`.
   - `diary`, `tasks`, `tags`: `schemas.ts` + `api.ts` (fetch wrappers) + `hooks.ts`
     (TanStack Query hooks, query-key factories, optimistic updates) + `components/`,
-    backed by `src/app/api/<feature>/route.ts` → `src/services/<feature>.ts`.
-- **`src/services/`:** business logic and Prisma calls live here, not in route
-  handlers or actions. Services always scope queries by `userId` — the id alone
-  is never trusted.
+    backed by `src/app/api/<feature>/route.ts` → `features/<feature>/service.ts`.
+- **`features/<feature>/service.ts`:** business logic and Prisma calls live here, not
+  in route handlers or actions. Services always scope queries by `userId` — the id
+  alone is never trusted. `diary` and `tasks` import `resolveOwnedTagIds` from
+  `features/tags/server.ts` (not `index.ts` — see next bullet) to validate tag
+  ownership — a normal, one-directional cross-feature dependency (tags never imports
+  from diary/tasks).
+- **Cross-feature boundaries:** never import another feature's internal files
+  (`service.ts`, `api.ts`, `hooks.ts`, `schemas.ts`, or a `components/*` file) directly
+  — this includes shared/common code under `src/components/` reaching into a feature,
+  not just feature-to-feature. Import only from that feature's public entry point(s):
+  `index.ts` for client-safe exports (components, constants) and a separate
+  `server.ts` for server-only exports (Prisma-backed service functions) — **never
+  combine both in one barrel file.** A client component transitively importing a
+  barrel that also re-exports a Prisma-backed function drags `pg`'s Node-only
+  internals into the client bundle and breaks the production build (confirmed: this
+  happened with a combined `tags/index.ts` and was fixed by splitting it into
+  `index.ts` + `server.ts`, each guarded by `import "server-only"` where relevant).
+  Add these entry points to a feature only once something outside it actually needs
+  to consume it — don't pre-create empty barrels for features with no external
+  consumers (currently `diary`, `tasks`, `profile`). A feature's own
+  `app/api/<feature>/route.ts` or `actions.ts` calling directly into that same
+  feature's `service.ts` is not a cross-feature import and stays as-is. See the
+  `feature-development` skill's `references/cross-feature-boundaries.md` for the
+  worked examples and the process rules (inspect existing structure before adding
+  files, reuse existing abstractions, don't introduce a third feature-shape pattern,
+  don't move existing code unless asked).
 - **API routes self-guard auth:** `src/proxy.ts`'s matcher excludes `/api`, so
   every route handler calls `auth()` and returns `unauthorized()` itself. Reuse
   the shared helpers in `src/lib/api.ts` (`unauthorized`, `badRequest`, `notFound`).

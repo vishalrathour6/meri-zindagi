@@ -26,6 +26,20 @@ gives the concrete step-by-step and cites real files.)
 Component placement and form/loading/error conventions are shared by both patterns —
 see `references/ui-conventions.md`.
 
+## Cross-feature boundaries
+
+Never import another feature's internal files (`service.ts`, `api.ts`, `hooks.ts`,
+`schemas.ts`, `components/*`) directly — this includes shared/common code (e.g.
+`src/components/`) reaching into a feature, not just feature-to-feature. Import only
+from that feature's public entry points — `index.ts` (client-safe) and `server.ts`
+(server-only, Prisma-backed) — never combined in one file, add either only once
+something outside the feature actually needs it. See
+`references/cross-feature-boundaries.md` for the worked examples (`tags`, `auth`), why
+the client/server split is non-negotiable (a combined barrel broke the production
+build — confirmed, not theoretical), the `server-only` guard rule, and the process
+rules for touching this codebase generally (inspect before creating, reuse existing
+abstractions, don't invent a third pattern, don't move code unless asked).
+
 ## Request-flow template (fetch + TanStack Query pattern)
 
 For a new or modified list-backed feature, touch files in this order:
