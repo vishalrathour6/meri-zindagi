@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { TagPicker } from "@/features/tags/components/TagPicker";
+import { TagPicker } from "@/features/tags";
 
 import { MoodPicker } from "./MoodPicker";
 import type { Diary } from "../api";

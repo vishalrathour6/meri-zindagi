@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TagFilterSelect } from "@/features/tags/components/TagFilterSelect";
+import { TagFilterSelect } from "@/features/tags";
 
 import type { TaskStatus } from "../schemas";
 import { priorities } from "../schemas";

@@ -2,7 +2,7 @@
 
 Used by `diary`, `tasks`, `tags`. `schemas.ts` + `api.ts` (fetch wrappers) + `hooks.ts`
 (TanStack Query hooks), backed by `src/app/api/<feature>/route.ts` →
-`src/services/<feature>.ts` (see `route-handler-service-pattern.md` for that half).
+`features/<feature>/service.ts` (see `route-handler-service-pattern.md` for that half).
 
 ## `api.ts` — fetch wrappers
 

@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { TagFilterSelect } from "@/features/tags/components/TagFilterSelect";
+import { TagFilterSelect } from "@/features/tags";
 
 import { formatDateLabel } from "../utils";
 import { moods } from "../schemas";

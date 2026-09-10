@@ -1,8 +1,10 @@
+import "server-only";
+
 import type { Tag } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 
-import type { CreateTagInput } from "@/features/tags/schemas";
-import { colorForName } from "@/features/tags/colors";
+import type { CreateTagInput } from "./schemas";
+import { colorForName } from "./colors";
 
 /**
  * Tag data-access layer. Every function is scoped by `userId` so a user can

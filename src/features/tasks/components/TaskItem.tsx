@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { formatDateLabel, snippet } from "@/lib/format";
-import { TagBadge } from "@/features/tags/components/TagBadge";
+import { TagBadge } from "@/features/tags";
 
 import { PRIORITY_META } from "../priority";
 import type { Task } from "../api";

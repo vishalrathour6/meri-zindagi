@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { createDiarySchema, diaryQuerySchema } from "@/features/diary/schemas";
 import { badRequest, unauthorized } from "@/lib/api";
-import { createDiary, listDiaries } from "@/services/diary";
+import { createDiary, listDiaries } from "@/features/diary/service";
 
 // `/api/*` is NOT covered by the proxy matcher, so each handler guards itself.
 

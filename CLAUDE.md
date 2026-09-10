@@ -21,9 +21,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture notes
 
-- Request flow is layered: `app/` (pages/route handlers) → `features/*/api.ts` or `actions.ts`
-  → `src/services/*.ts` (business logic, Prisma calls) → generated Prisma client → Postgres.
-  Route handlers and server actions stay thin; put logic in `services/`.
+- Request flow is layered: `app/` (pages/route handlers) → `features/<feature>/api.ts`
+  or `actions.ts` → `features/<feature>/service.ts` or (for `auth`/`profile`) Prisma
+  calls inline in `actions.ts` → generated Prisma client → Postgres. Route handlers and
+  server actions stay thin; put business logic in the feature's `service.ts`.
 - Data model (`prisma/schema.prisma`): `User` 1:N `Diary`/`Task`/`Tag`, with `Diary`/`Task`
   M:N `Tag` (per-user tags, `@@unique([userId, name])`). `Diary` has an optional `Mood`
   enum (Happy/Neutral/Sad); `Task` has `Status` (Pending/Completed) and `Priority`
